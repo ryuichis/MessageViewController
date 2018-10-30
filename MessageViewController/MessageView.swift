@@ -24,6 +24,8 @@ public final class MessageView: UIView, MessageTextViewListener {
     internal var ignoreLineHeight = false
     internal var suppressKVO = false
     
+    public let backgroundView: UIView
+    
     public enum ButtonPosition {
         case left
         case right
@@ -32,9 +34,17 @@ public final class MessageView: UIView, MessageTextViewListener {
     internal var heightOffset: CGFloat = 0
     
     internal override init(frame: CGRect) {
+        backgroundView = UIView(frame: frame)
+        
         super.init(frame: frame)
 
         backgroundColor = .white
+        
+        addSubview(backgroundView)
+        backgroundView.backgroundColor = .yellow
+        backgroundView.layer.cornerRadius = 8
+        backgroundView.layer.borderWidth = 1
+        backgroundView.layer.borderColor = UIColor.red.cgColor
 
         addSubview(leftButton)
         addSubview(textView)
@@ -309,6 +319,7 @@ public final class MessageView: UIView, MessageTextViewListener {
             width: safeBounds.width - leftButtonMaxX - rightButtonSize.width - rightButtonInset,
             height: textViewHeight
         )
+        backgroundView.frame = CGRect(x: textViewFrame.minX, y: textViewFrame.minY + 8, width: textViewFrame.width, height: textViewFrame.height - 16)
 
         suppressKVO = true
         textView.frame = textViewFrame
