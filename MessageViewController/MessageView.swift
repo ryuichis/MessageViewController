@@ -22,16 +22,26 @@ public final class MessageView: UIView, MessageTextViewListener {
     internal var rightButtonAction: Selector?
     internal var leftButtonInset: CGFloat = 0
     internal var rightButtonInset: CGFloat = 0
-
+    
+    public let backgroundView: UIView
+    
     public enum ButtonPosition {
         case left
         case right
     }
 
     internal override init(frame: CGRect) {
+        backgroundView = UIView(frame: frame)
+        
         super.init(frame: frame)
 
         backgroundColor = .white
+        
+        addSubview(backgroundView)
+        backgroundView.backgroundColor = .yellow
+        backgroundView.layer.cornerRadius = 8
+        backgroundView.layer.borderWidth = 1
+        backgroundView.layer.borderColor = UIColor.red.cgColor
 
         addSubview(leftButton)
         addSubview(textView)
@@ -260,6 +270,13 @@ public final class MessageView: UIView, MessageTextViewListener {
             width: safeBounds.width - leftButtonFrame.maxX - rightButtonSize.width - rightButtonInset - inset.right,
             height: textViewHeight
         )
+        
+//        if calculatedMaxHeight > textView.contentSize.height {
+            backgroundView.frame = CGRect(x: textViewFrame.minX + 10, y: textViewFrame.minY + 8, width: textViewFrame.width - 20, height: textViewFrame.height - 16)
+//        } else {
+//            backgroundView.frame = CGRect(x: textViewFrame.minX + 10, y: textViewFrame.minY, width: textViewFrame.width - 20, height: textViewFrame.height)
+//        }
+        
         textView.frame = textViewFrame
 
         // adjust by bottom offset so content is flush w/ text view
