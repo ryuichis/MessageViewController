@@ -319,7 +319,12 @@ public final class MessageView: UIView, MessageTextViewListener {
             width: safeBounds.width - leftButtonMaxX - rightButtonSize.width - rightButtonInset,
             height: textViewHeight
         )
-        backgroundView.frame = CGRect(x: textViewFrame.minX + 10, y: textViewFrame.minY + 8, width: textViewFrame.width - 20, height: textViewFrame.height - 16)
+        
+        if calculatedMaxHeight > textView.contentSize.height {
+            backgroundView.frame = CGRect(x: textViewFrame.minX + 10, y: textViewFrame.minY + 8, width: textViewFrame.width - 20, height: textViewFrame.height - 16)
+        } else {
+            backgroundView.frame = CGRect(x: textViewFrame.minX + 10, y: textViewFrame.minY, width: textViewFrame.width - 20, height: textViewFrame.height)
+        }
 
         suppressKVO = true
         textView.frame = textViewFrame
