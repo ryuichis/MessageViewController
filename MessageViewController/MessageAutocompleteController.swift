@@ -31,23 +31,23 @@ public final class MessageAutocompleteController: MessageTextViewListener {
     public private(set) var selection: Selection?
     
     /// Adds an additional space after the autocompleted text when true. Default value is `TRUE`
-    open var appendSpaceOnCompletion = true
+    public var appendSpaceOnCompletion = true
     
     /// The text attributes applied to highlighted substrings for each prefix
-    private var autocompleteTextAttributes: [String: [NSAttributedStringKey: Any]] = [:]
+    private var autocompleteTextAttributes: [String: [NSAttributedString.Key: Any]] = [:]
     
     /// A key used for referencing which substrings were autocompletes
-    private let NSAttributedAutocompleteKey = NSAttributedStringKey.init("com.messageviewcontroller.autocompletekey")
+    private let NSAttributedAutocompleteKey = NSAttributedString.Key.init("com.messageviewcontroller.autocompletekey")
 
-    private var defaultTextAttributes: [NSAttributedStringKey: Any] {
+    private var defaultTextAttributes: [NSAttributedString.Key: Any] {
         return [
-            .font: textView.defaultFont,
-            .foregroundColor: textView.defaultTextColor,
+            .font: textView.defaultFont as Any,
+            .foregroundColor: textView.defaultTextColor as Any,
         ]
     }
     
     /// A reference to `defaultTextAttributes` that adds the NSAttributedAutocompleteKey
-    private var typingTextAttributes: [NSAttributedStringKey: Any] {
+    private var typingTextAttributes: [NSAttributedString.Key: Any] {
         var attributes = defaultTextAttributes
         attributes[.paragraphStyle] = paragraphStyle
         attributes[NSAttributedAutocompleteKey] = false
@@ -77,7 +77,7 @@ public final class MessageAutocompleteController: MessageTextViewListener {
         notificationCenter.addObserver(
             self,
             selector: #selector(keyboardWillChangeFrame(notification:)),
-            name: .UIKeyboardWillChangeFrame,
+            name: UIResponder.keyboardWillChangeFrameNotification,
             object: nil
         )
 
@@ -177,7 +177,7 @@ public final class MessageAutocompleteController: MessageTextViewListener {
         }
     }
 
-    public func registerAutocomplete(prefix: String, attributes: [NSAttributedStringKey: Any]) {
+    public func registerAutocomplete(prefix: String, attributes: [NSAttributedString.Key: Any]) {
         registeredPrefixes.insert(prefix)
         autocompleteTextAttributes[prefix] = attributes
         autocompleteTextAttributes[prefix]?[.paragraphStyle] = paragraphStyle
@@ -228,7 +228,7 @@ public final class MessageAutocompleteController: MessageTextViewListener {
     }
 
     @objc internal func keyboardWillChangeFrame(notification: Notification) {
-        guard let keyboardFrame = notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as? CGRect
+        guard let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect
             else { return }
         keyboardHeight = keyboardFrame.height
     }
@@ -237,8 +237,8 @@ public final class MessageAutocompleteController: MessageTextViewListener {
     ///
     /// - Parameter textView: The `UITextView` to apply `typingTextAttributes` to
     internal func preserveTypingAttributes(for textView: UITextView) {
-        var typingAttributes = [String: Any]()
-        typingTextAttributes.forEach { typingAttributes[$0.key.rawValue] = $0.value }
+        var typingAttributes = [NSAttributedString.Key: Any]()
+        typingTextAttributes.forEach { typingAttributes[$0.key] = $0 }
         textView.typingAttributes = typingAttributes
     }
 
